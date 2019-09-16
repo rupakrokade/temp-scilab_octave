@@ -21,9 +21,9 @@ static const char fname[] = "octave_fun";
 int sci_octave_fun(scilabEnv env, int nin, scilabVar* in, int nopt, scilabOpt* opt, int nout, scilabVar* out)
 
 {
-	if (nin < 3)
+	if (nin < 4)
     {
-        Scierror(999, _("%s: Wrong number of input arguments: %d expected.\n"), fname, 3);
+        Scierror(999, _("%s: Wrong number of input arguments: %d expected.\n"), fname, 4);
         return STATUS_ERROR;
     }
 		printf("Number of Input Args are %d\n",nin);
@@ -129,6 +129,72 @@ printf("%s\n", "=================================");
 			Scierror(999, _("%s: Wrong type for input argument #%d: A double expected.\n"), fname, 3);
         return STATUS_ERROR;
 		}
+
+////////////////Fourth Input/////////////////////
+	if(scilab_getType(env, in[3])==10)
+	{
+		wchar_t* in2 = 0;
+
+		char str2[20];
+		if (scilab_isString(env, in[3]) == 0)
+			{
+			  Scierror(999, _("%s: Wrong type for input argument #%d: A String expected.\n"), fname, 4);
+			    return STATUS_ERROR;
+			}
+		else
+			{
+				scilab_getString(env, in[3], &in2);
+				//printf("%S\n", in1);
+
+				 wcstombs(str2, in2, sizeof(str2));
+				//printf("%s\n", str);
+				if(str2)
+					ins.name1 = str2;
+			}
+		}
+		else
+		{
+			Scierror(999, _("%s: Wrong type for input argument #%d: A String expected.\n"), fname, 4);
+        return STATUS_ERROR;
+		}
+
+////////////////Fifth Input/////////////////////
+if(nin<5)
+{
+	//printf("Here1----------------");
+	ins.package = NULL;
+}
+else
+{
+//printf("Here2----------------");
+		wchar_t* in4 = 0;
+
+		char str3[20];
+
+			if (scilab_isString(env, in[4]) == 0)
+				{	
+					//printf("Here----------------");
+					ins.name2 = NULL;
+					Scierror(999, _("%s: Wrong type for input argument #%d: A String expected.\n"), fname, 4);
+
+					return STATUS_ERROR;
+				}
+			else
+				{
+					scilab_getString(env, in[4], &in4);
+					//printf("%S\n", in1);
+
+					wcstombs(str3, in4, sizeof(str3));
+					//printf("%s\n", str);
+//					if(!*str3)
+						ins.package = str3;
+//					else
+//						ins.name2 = NULL;
+				}
+
+
+}
+
 /*
 ////////////////Second Input/////////////////////
 	wchar_t* in1 = 0;
@@ -150,63 +216,6 @@ printf("%s\n", "=================================");
 				ins.package = str;
 		}
 */
-////////////////Fourth Input/////////////////////
-	wchar_t* in2 = 0;
-
-	char str2[20];
-	if (scilab_isString(env, in[3]) == 0)
-    {
-      Scierror(999, _("%s: Wrong type for input argument #%d: A String expected.\n"), fname, 4);
-        return STATUS_ERROR;
-    }
-	else
-		{
-			scilab_getString(env, in[3], &in2);
-			//printf("%S\n", in1);
-
-			 wcstombs(str2, in2, sizeof(str2));
-			//printf("%s\n", str);
-			if(str2)
-				ins.name1 = str2;
-		}
-
-
-////////////////Fourth Input/////////////////////
-if(nin<5)
-{
-	ins.name2 = NULL;
-}
-else
-{
-		wchar_t* in4 = 0;
-
-		char str3[20];
-
-			if (scilab_isString(env, in[3]) == 0)
-				{	
-					printf("Here----------------");
-					ins.name2 = NULL;
-					Scierror(999, _("%s: Wrong type for input argument #%d: A String expected.\n"), fname, 4);
-
-					return STATUS_ERROR;
-				}
-			else
-				{
-					scilab_getString(env, in[3], &in4);
-					//printf("%S\n", in1);
-
-					wcstombs(str3, in4, sizeof(str3));
-					//printf("%s\n", str);
-					if(!*str3)
-						ins.name2 = str3;
-					else
-						ins.name2 = NULL;
-				}
-
-
-}
-
-
 
 //if (nin != 0)
 //    {
