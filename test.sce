@@ -5,7 +5,7 @@ test1=0
 exec loader.sce
 /////////Test case for       2) arburg                  //////////
 
-a = octave_fun([1,2,3,4,5],[2],[],"arburg","signal");
+[a,b] = octave_fun([1,2,3,4,5],[2],[],"arburg","signal");
 a = round(a*10000)/10000;
 
 if(a == [1.  -1.8639    0.9571])
@@ -39,7 +39,7 @@ r=octave_fun(x,[],[],"xcorr","signal");
 
 ar=octave_fun(r,length(a)-1,[],"levinson","signal");
 
-ar = round(ar*10000)/10000
+ar = round(ar*10000)/10000;
 
 if(ar == [1 0.0984 -0.793])
            test_pass=[test_pass,1]
@@ -63,7 +63,7 @@ end
 /////////Test case for       **)circshift                  /////////
 
  M = [1 2 3 4];
- R = octave_fun(M,[0 1],[],"circshift")
+ R = octave_fun(M,[0 1],[],"circshift");
 
 if(R == [4 1 2 3])
            test_pass=[test_pass,1]
@@ -91,7 +91,7 @@ end
 
 
 /////////Test case for       autoreg_matrix                 //////////
-m = octave_fun([1 2 3],[2],[],"autoreg_matrix")
+m = octave_fun([1 2 3],[2],[],"autoreg_matrix");
 
 if(m == [1 0 0; 1 1 0; 1 2 1])
            test_pass=[test_pass,1]

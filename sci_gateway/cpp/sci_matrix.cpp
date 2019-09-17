@@ -26,7 +26,7 @@ int sci_octave_fun(scilabEnv env, int nin, scilabVar* in, int nopt, scilabOpt* o
         Scierror(999, _("%s: Wrong number of input arguments: %d expected.\n"), fname, 4);
         return STATUS_ERROR;
     }
-		printf("Number of Input Args are %d\n",nin);
+	//	printf("Number of Input Args are %d\n",nin);
 /*
 int typ=0;
 	for(int i=1;i<nin+1;i++)
@@ -175,7 +175,7 @@ else
 				{	
 					//printf("Here----------------");
 					ins.name2 = NULL;
-					Scierror(999, _("%s: Wrong type for input argument #%d: A String expected.\n"), fname, 4);
+					Scierror(999, _("%s: Wrong type for input argument #%d: An Octave function name expected.\n"), fname, 4);
 
 					return STATUS_ERROR;
 				}
@@ -196,7 +196,7 @@ else
 }
 
 /*
-////////////////Second Input/////////////////////
+////////////////optional Input/////////////////////
 	wchar_t* in1 = 0;
 
 	char str[20];
@@ -223,22 +223,24 @@ else
 //        return 1;
 //    }
 
-if (nout != 1)
+
+if (nout > 2)
     {
-        Scierror(77, _("%s: Wrong number of output argument(s): %d expected.\n"), fname, 1);
+        Scierror(77, _("%s: Wrong number of output argument(s). Maximum %d expected\n"), fname, 2);
         return 1;
     }
 
 		
 
-		//fun(ar, inp, col, str, str2);
+
 		int status_fun = fun(inptr);
 	if(status_fun==1)
 	{
 		return 1;
 	}
 	else
-	{		
+	{	
+		////////////////////First Output////////////////////	
  		int out_row1 = ins.size_output1[1];
 		int out_col1 = ins.size_output1[2];
 		int out_dim1 = out_row1 * out_col1;
@@ -251,10 +253,44 @@ if (nout != 1)
 		{
 			out1[i] = ins.output1[i];//.float_value();
 		}
-		free(ins.output1);
+		////////////////////Second Output////////////////////	
+ 		int out_row2 = ins.size_output2[1];
+		int out_col2 = ins.size_output2[2];
+		int out_dim2 = out_row2 * out_col2;
+		//printf("out_row2 is: %d\n", out_row2);
+		//printf("out_col2 is: %d\n", out_col2);
+		//printf("no of outputs is: %d\n", ins.out_count);
+		if(nout==2)
+		{
+			if((out_row2>0 && out_col2>0))
+			{
+				//printf("Generating second output---------\n");
+				out[1] = scilab_createDoubleMatrix2d(env, out_row2, out_col2, 0);
+
+				double* out2 = NULL;
+			 	scilab_getDoubleArray(env, out[1], &out2);
+
+				for(unsigned int i=0; i<out_dim2; i++)
+				{
+					out2[i] = ins.output2[i];//.float_value();
+				}
+					//free(ins.output2);
+					delete ins.output2;
+			}
+			else
+			{
+				Scierror(77, _("%s: Wrong number of output argument(s): Maximum %d expected \n"), fname, 1);
+		      return 1;
+			}
+		}
+/*		free(ins.output1);
 		free(ins.input1);
 		free(ins.input2);
-		free(ins.input3);
+		free(ins.input3);*/
+		delete ins.output1;
+		delete ins.input1;
+		delete ins.input2;
+		delete ins.input3;
 	}
 
     return 0;
